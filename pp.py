@@ -33,11 +33,6 @@ except Exception as e:
 
 
 df=None
-def get_base64_of_bin_file(bin_file):
-        with open(bin_file, 'rb') as f:
-            data = f.read()
-        return base64.b64encode(data).decode()
-
 
 
 
@@ -74,19 +69,7 @@ with st.sidebar:
 
 # Pages based on selected option
 if selected == "Home":
-        bg_image_path = r"bg_home1.jpg"
-        bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-        st.markdown(f"""
-        <style>
-        .stApp {{
-
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+       
         dic={}
 
         #st.title("**Welcome to the Churn Prediction App!**")
@@ -307,21 +290,10 @@ elif selected == "Prediction Analytics":
 
 
 
-    bg_image_path = r"bg_data.jpg"
+    
+
 
     
-    bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-
-    st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
     with st.container():
          st.title('Churn Prediction Analysis...........')
     try:
