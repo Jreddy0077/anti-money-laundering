@@ -91,7 +91,7 @@ df=None
 
 
 
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 # Custom CSS to remove padding and margins
 
