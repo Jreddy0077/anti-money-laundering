@@ -6,9 +6,7 @@ import pickle
 import streamlit as st
 import time
 import base64
-from sqlalchemy import create_engine,text
-import pymysql
-from sqlalchemy.exc import SQLAlchemyError
+
 import re
 
 
@@ -68,10 +66,10 @@ st.markdown(custom_css, unsafe_allow_html=True)
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",  # required
-        options=["Home", "Prediction Analytics", "Register/Login/Profile","About The Model"],  # required
-        icons=["house", "bar-chart", "person-square","robot"],  # optional
+        options=["Home", "Prediction Analytics"],  # required
+        icons=["house", "bar-chart"],  # optional
          menu_icon="box-arrow-in-right",
-        default_index=2,  # optional
+        default_index=0,  # optional
     )
 
 # Pages based on selected option
