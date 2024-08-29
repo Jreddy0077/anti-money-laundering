@@ -13,15 +13,7 @@ import re
 
 
 
-import os
-model_path = os.path.join(os.path.dirname(__file__), "strnew.pkl")
-try:
-    with open(model_path, "rb") as f:
-        model = pickle.load(f)
-except FileNotFoundError:
-    st.error(f"Model file {model_path} not found.")
-except Exception as e:
-    st.error(f"An error occurred while loading the model: {e}")
+
 ####################################################################################
 
 db_user = '2yasPb2k6DKrXZH.root'
@@ -126,32 +118,10 @@ with st.sidebar:
         default_index=1,  # optional
     )
 
-# Pages based on selected option
 if selected == "Home":
-    if selected == "Register/Login/Profile":
-        bg_image_path = r"login_image.jpg"
-        
-        def get_base64_of_bin_file(bin_file):
-            with open(bin_file, 'rb') as f:
-                 data = f.read()
-                 return base64.b64encode(data).decode()
-        
-        bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-        
-        st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
-########################################################################3333333333
-        
-#################################################################################
-        l_number = list(df_user["number"])
+    
+elif selected == "Register/Login/Profile":
+    l_number = list(df_user["number"])
 
 ##############################################################################################
 
