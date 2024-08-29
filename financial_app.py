@@ -133,6 +133,8 @@ if selected == "Home":
     """, unsafe_allow_html=True)
     l_number = list(df_user["number"])
 
+    st.markdown('<h2 style="color:red;">Welcome To Investment Portfolio Application</h2>', unsafe_allow_html=True)
+
     st.title("**Completed the training of the machine learning model on different data sets for short term financial plans**")
     st.markdown('<h2 style="color:red;">Need to add the long term financial plan models</h2>', unsafe_allow_html=True)
 
@@ -159,7 +161,7 @@ elif selected == "Register/Login/Profile":
    
     
 
-    st.markdown('<h2 style="color:orange;">Welcome To Churn Prediction Application</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="color:orange;">Welcome To Investment Portfolio Application</h2>', unsafe_allow_html=True)
 
 
 
