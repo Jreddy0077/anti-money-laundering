@@ -128,14 +128,7 @@ with st.sidebar:
 
 # Pages based on selected option
 if selected == "Home":
-       
-        
-
-
-                    
-                        
-if selected == "Register/Login/Profile":
-        
+    if selected == "Register/Login/Profile":
         bg_image_path = r"login_image.jpg"
         
         def get_base64_of_bin_file(bin_file):
