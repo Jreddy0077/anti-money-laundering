@@ -134,7 +134,7 @@ if selected == "Home":
 
                     
                         
-elif selected == "Register/Login/Profile":
+if selected == "Register/Login/Profile":
         
         bg_image_path = r"login_image.jpg"
         
