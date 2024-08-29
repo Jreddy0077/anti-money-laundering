@@ -134,7 +134,7 @@ if selected == "Home":
     l_number = list(df_user["number"])
 
     st.title("**Completed the training of the machine learning model on different data sets for short term financial plans**")
-    st.markdown('<h2 style="color:yellow;">Need to add the long term financial plan models</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="color:red;">Need to add the long term financial plan models</h2>', unsafe_allow_html=True)
 
 
 
