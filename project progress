@@ -2,6 +2,8 @@ project progress:'
 
 the application will have short term and long-term financial plans
 
+deployment and hosting of the application is completed in streamlit cloud -- completed 
+
 the user can get short-term financial models sugessions by machine learning -- completed -- need to creat inputs for ml model predictions in the application
 the user can get the long-term plan sugessions -- inprogress
 
