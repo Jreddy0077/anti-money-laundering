@@ -1,0 +1,11 @@
+project progress:'
+
+the application will have short term and long-term financial plans
+
+the user can get short-term financial models sugessions by machine learning -- completed -- yet to put on the website
+
+the user can get the long-term plan sugessions -- inprogress
+
+the application there is an option to user can register the account and login. -- completed
+
+the details will be saved in the cloud database(TIDB cloud)    -- completed
