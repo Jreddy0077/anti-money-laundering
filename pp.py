@@ -122,19 +122,19 @@ if selected == "Home":
     pass;
     
 elif selected == "Register/Login/Profile":
-     bg_image_path = r"bg_home1.jpg.png"
-        bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-        st.markdown(f"""
-        <style>
-        .stApp {{
+    bg_image_path = r"bg_home1.jpg.png"
+    bg_image_base64 = get_base64_of_bin_file(bg_image_path)
+    st.markdown(f"""
+    <style>
+    .stApp {{
 
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+        background-image: url("data:image/jpg;base64,{bg_image_base64}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
     l_number = list(df_user["number"])
 
 
