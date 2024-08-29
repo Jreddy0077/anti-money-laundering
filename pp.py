@@ -133,6 +133,11 @@ if selected == "Home":
     """, unsafe_allow_html=True)
     l_number = list(df_user["number"])
 
+    st.title("**Completed the training of the machine learning model on different data sets for short term financial plans**")
+    st.markdown('<h2 style="color:yellow;">Need to add the long term financial plan models</h2>', unsafe_allow_html=True)
+
+
+
     
 elif selected == "Register/Login/Profile":
     bg_image_path = r"bg_home1.jpg.png"
