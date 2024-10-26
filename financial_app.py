@@ -162,7 +162,6 @@ if selected == "Home":
 
         
                 file_type = st.selectbox("", ("CSV", "Excel"))
-                #uploaded_file=None
 
 
         
@@ -187,6 +186,7 @@ if selected == "Home":
                 if st.button("Predict"):
                                 with st.spinner("Please wait while predicting...."):
                                     time.sleep(3)
+                                    print(df)
                                 
                                 
                                     try:
