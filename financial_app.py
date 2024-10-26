@@ -111,8 +111,8 @@ st.markdown(custom_css, unsafe_allow_html=True)
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",  # required
-        options=["Home", "Register/Login/Profile"],  # required
-        icons=["house", "person-square"],  # optional
+        options=["Home",  "Prediction Analytics","Register/Login/Profile"],  # required
+        icons=["house", "bar-chart", "person-square"],  # optional
          menu_icon="box-arrow-in-right",
         default_index=1,  # optional
     )
@@ -133,12 +133,56 @@ if selected == "Home":
     """, unsafe_allow_html=True)
     l_number = list(df_user["number"])
 
-    st.markdown('<h2 style="color:red;">Welcome To Investment Portfolio Application</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="color:red;">anti maonrey laundering </h2>', unsafe_allow_html=True)
 
-    st.title("**Completed the training of the machine learning model on different data sets for short term financial plans**")
-    st.markdown('<h2 style="color:red;">Need to add the long term financial plan models</h2>', unsafe_allow_html=True)
+    st.markdown('<h4 style="color:orange;">Select Prediction Method</h4>', unsafe_allow_html=True)
+
+    prediction_method = st.radio('', ('Predict Churn Record-wise', 'Predict Churn for Entire DataFrame'))
+    if prediction_method=='Predict Churn Record-wise':
+        c1, c2, c3, c4, c5, c6 = st.columns([1,1,1,1,1,1.3])
+
+        with c2:
+                st.markdown('<p style="color:red;">International Plan</p>', unsafe_allow_html=True)
+                international_plan = st.selectbox("", ("yes", "no"), key='international_plan')
 
 
+    
+    if prediction_method=='Predict Churn for Entire DataFrame':
+                
+
+                st.markdown('<p style="color:red;">Select file type</p>', unsafe_allow_html=True)
+
+        
+                file_type = st.selectbox("", ("CSV", "Excel"))
+                #uploaded_file=None
+
+
+        
+                uploaded_file = st.file_uploader(f"Upload {file_type} file",type=[file_type.lower()])
+
+                if file_type=="CSV":
+
+                    try:
+                        df=pd.read_csv(uploaded_file)
+                        df.to_csv("df.csv",index=False)
+                    except Exception as e:
+                                    st.write("Not Uploaded")
+                else:
+                    try:
+                        df=pd.read_excel(uploaded_file)
+                        df.to_excel("df.xlsx",index=False)
+
+                    except Exception as e:
+                                    st.write("Not Uploaded")
+
+                    
+        
+
+
+
+
+
+   
 
     
 elif selected == "Register/Login/Profile":
