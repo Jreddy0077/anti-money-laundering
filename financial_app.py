@@ -12,7 +12,15 @@ from sqlalchemy.exc import SQLAlchemyError
 import re
 
 
-
+import os
+model_path = os.path.join(os.path.dirname(__file__), "aml.pkl")
+try:
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+except FileNotFoundError:
+    st.error(f"Model file {model_path} not found.")
+except Exception as e:
+    st.error(f"An error occurred while loading the model: {e}")
 
 ####################################################################################
 
@@ -183,10 +191,10 @@ if selected == "Home":
                                 
                                     try:
                                         result = model.predict(df)
-                                        churn = ["Yes" if pred == 1 else "No" for pred in result]
-                                        df["churn"] = churn
+                                        laundering = ["Yes" if pred == 1 else "No" for pred in result]
+                                        df["is laundering"] = laundering
                     
-                                        churn_counts = df['churn'].value_counts()
+                                        churn_counts = df['is laundering'].value_counts()
                     
                                         st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {churn_counts["Yes"]}</p>', unsafe_allow_html=True)
                                         st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(churn)}</p>', unsafe_allow_html=True)
