@@ -187,10 +187,10 @@ if selected == "Home":
                                 with st.spinner("Please wait while predicting...."):
                                     time.sleep(3)
                                     st.dataframe(df) 
-                                
-                                
                                     try:
+                                        st.write("HI")
                                         result = model.predict(df)
+                                        st.write(result)
                                         laundering = ["Yes" if pred == 1 else "No" for pred in result]
                                         df["is laundering"] = laundering
                     
@@ -199,9 +199,6 @@ if selected == "Home":
                                         st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {churn_counts["Yes"]}</p>', unsafe_allow_html=True)
                                         st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(churn)}</p>', unsafe_allow_html=True)
                                         st.title("Go to Prediction Analytics to view analytics")
-                                                
-                    
-                    
                                     except Exception as e:
                                             st.error("Please upload your file before predicting...")
 
