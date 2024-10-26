@@ -186,7 +186,7 @@ if selected == "Home":
                 if st.button("Predict"):
                                 with st.spinner("Please wait while predicting...."):
                                     time.sleep(3)
-                                    print(df)
+                                    st.dataframe(df) 
                                 
                                 
                                     try:
