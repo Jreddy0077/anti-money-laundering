@@ -400,7 +400,7 @@ elif selected == "Prediction Analytics":
 
 elif selected == "Register/Login/Profile":
         
-        bg_image_path = r"login_image.jpg"
+        bg_image_path = r"bg_home.jpg.png"
         
         def get_base64_of_bin_file(bin_file):
             with open(bin_file, 'rb') as f:
@@ -619,6 +619,5 @@ elif selected == "Register/Login/Profile":
                     st.markdown('<p style="color:green;">Successfully Registered</p>', unsafe_allow_html=True)
                 else:
                     st.markdown('<p style="color:red;">You Have Entered Something Wrong</p>', unsafe_allow_html=True)
-
 
 
