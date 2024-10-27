@@ -185,21 +185,32 @@ if selected == "Home":
 
                 if st.button("Predict"):
                     st.write("HI")
+                   # Ensure df is initialized as None
+                    df = None  
+                    
                     try:
-                        result = model.predict(df)
-                        st.write(result)
-                        laundering = ["Yes" if pred == 1 else "No" for pred in result]
-                        df["is laundering"] = laundering
-    
-                        laundering = df['is laundering'].value_counts()
-
-                        st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {laundering.count("Yes")}</p>', unsafe_allow_html=True)
-                        st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(df["is laundering"])}</p>', unsafe_allow_html=True)
-                        st.title("Go to Prediction Analytics to view analytics")
-                   
-
+                        # Check if df is not None
+                        if df is not None:
+                            result = model.predict(df)
+                            st.write(result)
+                            
+                            # Add laundering status to DataFrame
+                            laundering = ["Yes" if pred == 1 else "No" for pred in result]
+                            df["is laundering"] = laundering
+                            
+                            # Count laundering values
+                            laundering_counts = df['is laundering'].value_counts()
+                            
+                            # Display results
+                            st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {laundering_counts.get("Yes", 0)}</p>', unsafe_allow_html=True)
+                            st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(df["is laundering"])}</p>', unsafe_allow_html=True)
+                            st.title("Go to Prediction Analytics to view analytics")
+                        else:
+                            st.error("Please upload your file before predicting...")
+                    
                     except Exception as e:
-                        st.error("Please upload your file before predicting...")
+                        st.error("An error occurred during prediction.")
+
                         
                         
         
