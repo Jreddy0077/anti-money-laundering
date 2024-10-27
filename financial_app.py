@@ -151,135 +151,84 @@ if selected == "Home":
 
         prediction_method = st.radio('', ('Predict Churn Record-wise', 'Predict Churn for Entire DataFrame'))
         if prediction_method=='Predict Churn Record-wise':
-            c1, c2, c3, c4, c5, c6 = st.columns([1,1,1,1,1,1.3])
-            with c1:
-                states = ['OH', 'NJ', 'OK', 'MA', 'MO', 'LA', 'WV', 'IN', 'RI', 'IA', 'MT',
-                        'NY', 'ID', 'VA', 'TX', 'FL', 'CO', 'AZ', 'SC', 'WY', 'HI', 'NH',
-                        'AK', 'GA', 'MD', 'AR', 'WI', 'OR', 'MI', 'DE', 'UT', 'CA', 'SD',
-                        'NC', 'WA', 'MN', 'NM', 'NV', 'DC', 'VT', 'KY', 'ME', 'MS', 'AL',
-                        'NE', 'KS', 'TN', 'IL', 'PA', 'CT', 'ND']
+            from datetime import datetime
 
-                st.markdown('<p style="color:red;">State</p>', unsafe_allow_html=True)
-                selected_states = st.selectbox("", states, key='selected_states')
-
-                st.markdown('<p style="color:red;">Account Length</p>', unsafe_allow_html=True)
-                account_length = st.number_input("", key='account_length')
-
-                st.markdown('<p style="color:red;">Area Code</p>', unsafe_allow_html=True)
-                selected_code = st.selectbox("", (415, 408, 510), key='selected_code')
-
-            with c2:
-                st.markdown('<p style="color:red;">International Plan</p>', unsafe_allow_html=True)
-                international_plan = st.selectbox("", ("yes", "no"), key='international_plan')
-
-                st.markdown('<p style="color:red;">Voice Mail Plan</p>', unsafe_allow_html=True)
-                voice_mail = st.selectbox("", ("yes", "no"), key='voice_mail')
-
-                st.markdown('<p style="color:red;">Number of Voicemail Messages</p>', unsafe_allow_html=True)
-                number_vmail_messages = st.number_input("", key='number_vmail_messages')
-
-            with c3:
-                st.markdown('<p style="color:red;">Total Day Minutes</p>', unsafe_allow_html=True)
-                total_day_minutes = st.number_input("", key='total_day_minutes')
-
-                st.markdown('<p style="color:red;">Total Day Calls</p>', unsafe_allow_html=True)
-                total_day_calls = st.number_input("", key='total_day_calls')
-
-                st.markdown('<p style="color:red;">Total Day Charge</p>', unsafe_allow_html=True)
-                total_day_charge = st.number_input("", key='total_day_charge')
-
-            with c4:
-                st.markdown('<p style="color:red;">Total Evening Minutes</p>', unsafe_allow_html=True)
-                total_eve_minutes = st.number_input("", key='total_eve_minutes')
-
-                st.markdown('<p style="color:red;">Total Evening Calls</p>', unsafe_allow_html=True)
-                total_eve_calls = st.number_input("", key='total_eve_calls')
-
-                st.markdown('<p style="color:red;">Total Evening Charge</p>', unsafe_allow_html=True)
-                total_eve_charge = st.number_input("", key='total_eve_charge')
-
-            with c5:
-                st.markdown('<p style="color:red;">Total Night Minutes</p>', unsafe_allow_html=True)
-                total_night_minutes = st.number_input("", key='total_night_minutes')
-
-                st.markdown('<p style="color:red;">Total Night Calls</p>', unsafe_allow_html=True)
-                total_night_calls = st.number_input("", key='total_night_calls')
-
-                st.markdown('<p style="color:red;">Total Night Charge</p>', unsafe_allow_html=True)
-                total_night_charge = st.number_input("", key='total_night_charge')
-
-            with c6:
-                st.markdown('<p style="color:red;">Total International Minutes</p>', unsafe_allow_html=True)
-                total_intl_minutes = st.number_input("", key='total_intl_minutes')
-
-                st.markdown('<p style="color:red;">Total International Calls</p>', unsafe_allow_html=True)
-                total_intl_calls = st.number_input("", key='total_intl_calls')
-
-                st.markdown('<p style="color:red;">Total International Charge</p>', unsafe_allow_html=True)
-                total_intl_charge = st.number_input("", key='total_intl_charge')
-
-                st.markdown('<p style="color:red;">Number of Customer Service Calls</p>', unsafe_allow_html=True)
-                number_customer_service_calls = st.number_input("", key='number_customer_service_calls')
-
-
-
-            # Calculations
-            total_charge = total_day_charge + total_eve_charge + total_night_charge
-            total_days = account_length * 30
-
-            if total_days != 0:
-                charge_per_day = total_charge / total_days
-            else:
-                charge_per_day = 0
-
-            l_var = [
-                selected_states, 
-                account_length, 
-                selected_code, 
-                international_plan, 
-                voice_mail, 
-                number_vmail_messages, 
-                total_day_minutes, 
-                total_day_calls, 
-                total_day_charge, 
-                total_eve_minutes, 
-                total_eve_calls, 
-                total_eve_charge, 
-                total_night_minutes, 
-                total_night_calls, 
-                total_night_charge, 
-                total_intl_minutes, 
-                total_intl_calls, 
-                total_intl_charge, 
-                number_customer_service_calls,
-                total_day_minutes + total_eve_minutes + total_night_minutes, 
-                total_day_calls + total_night_calls + total_eve_calls, 
-                total_charge,
-                total_days,
-                account_length / 4 if account_length != 0 else 0,
-                account_length / 12 if account_length != 0 else 0,
-                charge_per_day]
-
-                    
-        
-        
-        
+            c1, c2, c3 = st.columns([1, 1, 1.5])
             
-                
-            data2 = [l_var]
+            with c1:
+                st.markdown('<p style="color:red;">Timestamp</p>', unsafe_allow_html=True)
+                timestamp = st.text_input("Enter Timestamp (YYYY-MM-DD HH:MM:SS)", key='timestamp')
+            
+                st.markdown('<p style="color:red;">From Bank</p>', unsafe_allow_html=True)
+                from_bank = st.text_input("From Bank", key='from_bank')
+            
+                st.markdown('<p style="color:red;">From Account</p>', unsafe_allow_html=True)
+                from_account = st.text_input("From Account", key='from_account')
+            
+            with c2:
+                st.markdown('<p style="color:red;">To Bank</p>', unsafe_allow_html=True)
+                to_bank = st.text_input("To Bank", key='to_bank')
+            
+                st.markdown('<p style="color:red;">To Account</p>', unsafe_allow_html=True)
+                to_account = st.text_input("To Account", key='to_account')
+            
+                st.markdown('<p style="color:red;">Amount Received</p>', unsafe_allow_html=True)
+                amount_received = st.number_input("Amount Received", key='amount_received')
+            
+            with c3:
+                st.markdown('<p style="color:red;">Receiving Currency</p>', unsafe_allow_html=True)
+                receiving_currency = st.selectbox("Receiving Currency", ["USD", "EUR", "INR", "GBP"], key='receiving_currency')
+            
+                st.markdown('<p style="color:red;">Amount Paid</p>', unsafe_allow_html=True)
+                amount_paid = st.number_input("Amount Paid", key='amount_paid')
+            
+                st.markdown('<p style="color:red;">Payment Currency</p>', unsafe_allow_html=True)
+                payment_currency = st.selectbox("Payment Currency", ["USD", "EUR", "INR", "GBP"], key='payment_currency')
+            
+                st.markdown('<p style="color:red;">Payment Format</p>', unsafe_allow_html=True)
+                payment_format = st.selectbox("Payment Format", ["Online", "Cheque", "Cash"], key='payment_format')
+            
+            # Extracting time-related features from the timestamp
+            try:
+                if timestamp:
+                    # Parse the timestamp
+                    dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+                    day = dt.day
+                    hour = dt.hour
+                    minute = dt.minute
+                    day_of_week = dt.strftime('%A')  # Extract the day name, e.g., Monday
+                    day_type = "Weekend" if day_of_week in ["Saturday", "Sunday"] else "Weekday"
+                    
+                    # Display parsed results
+                    st.write("**Day:**", day)
+                    st.write("**Hour:**", hour)
+                    st.write("**Minute:**", minute)
+                    st.write("**Day Type:**", day_type)
+                    st.write("**Day of Week:**", day_of_week)
+                    
+                else:
+                    st.error("Please enter a valid timestamp.")
+                    
+            except ValueError:
+                st.error("Incorrect timestamp format. Please use YYYY-MM-DD HH:MM:SS.")
+            
+            # Creating the DataFrame
+            data = [[timestamp, from_bank, from_account, to_bank, to_account, amount_received, 
+                     receiving_currency, amount_paid, payment_currency, payment_format, 
+                     day, hour, minute, day_type, day_of_week]]
+            
+            columns = ["time stamp", "from bank", "account", "to bank", "account.1", "amount received", 
+                       "receiving currency", "amount paid", "payment currency", "payment format", 
+                       "day", "hour", "min", "day_type", "day_of_week"]
+            
+            df = pd.DataFrame(data, columns=columns)
+            
+            # Display the DataFrame
+            st.write("Data for Prediction:")
+            st.write(df)
+            
 
-            columns = ['state', 'account_length', 'area_code', 'international_plan',
-                    'voice_mail_plan', 'number_vmail_messages', 'total_day_minutes',
-                    'total_day_calls', 'total_day_charge', 'total_eve_minutes',
-                    'total_eve_calls', 'total_eve_charge', 'total_night_minutes',
-                    'total_night_calls', 'total_night_charge', 'total_intl_minutes',
-                    'total_intl_calls', 'total_intl_charge',
-                    'number_customer_service_calls','total_min', 'total_call',
-                'total_charge', 'plan_day', 'plan_weeks', 'plan_years', 'charge_day']
-
-            df2= pd.DataFrame(data2, columns=columns)
-            import os
-# C:\Users\User\project\strnew.pkl
+######################################################
 
             
             
