@@ -14,7 +14,7 @@ import re
 
 
 import os
-model_path = os.path.join(os.path.dirname(__file__), "strnew.pkl")
+model_path = os.path.join(os.path.dirname(__file__), "aml.pkl")
 try:
     with open(model_path, "rb") as f:
         model = pickle.load(f)
@@ -120,15 +120,15 @@ st.markdown(custom_css, unsafe_allow_html=True)
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",  # required
-        options=["Home", "Prediction Analytics", "Register/Login/Profile","About The Model"],  # required
-        icons=["house", "bar-chart", "person-square","robot"],  # optional
+        options=["Home", "Prediction Analytics", "Register/Login/Profile"],  # required
+        icons=["house", "bar-chart", "person-square"],  # optional
          menu_icon="box-arrow-in-right",
         default_index=2,  # optional
     )
 
 # Pages based on selected option
 if selected == "Home":
-        bg_image_path = r"bg_home1.jpg"
+        bg_image_path = r"bg_home1.jpg.png"
         bg_image_base64 = get_base64_of_bin_file(bg_image_path)
         st.markdown(f"""
         <style>
@@ -143,7 +143,7 @@ if selected == "Home":
         """, unsafe_allow_html=True)
         dic={}
 
-        #st.title("**Welcome to the Churn Prediction App!**")
+        #st.title("**anti money laundering**")
         st.markdown('<h2 style="color:yellow;">There You Can Predict The Churn Of The Customers</h2>', unsafe_allow_html=True)
 
 
@@ -333,18 +333,18 @@ if selected == "Home":
                 #with c1:
                 if st.button("Predict"):
                     with st.spinner("Please wait while predicting...."):
-                        time.sleep(3)
+                        time.sleep(1)
                     
                     
                         try:
                             result = model.predict(df)
-                            churn = ["Yes" if pred == 1 else "No" for pred in result]
-                            df["churn"] = churn
+                            laundering = ["Yes" if pred == 1 else "No" for pred in result]
+                            df["laundering"] = laundering
         
-                            churn_counts = df['churn'].value_counts()
+                            l_counts = df['laundering'].value_counts()
         
-                            st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {churn_counts["Yes"]}</p>', unsafe_allow_html=True)
-                            st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(churn)}</p>', unsafe_allow_html=True)
+                            st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {l_counts["Yes"]}</p>', unsafe_allow_html=True)
+                            st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(laundering)}</p>', unsafe_allow_html=True)
                             st.title("Go to Prediction Analytics to view analytics")
                                     
         
@@ -361,7 +361,7 @@ elif selected == "Prediction Analytics":
 
 
 
-    bg_image_path = r"bg_data.jpg"
+    bg_image_path = r"hone1.png"
 
     
     bg_image_base64 = get_base64_of_bin_file(bg_image_path)
@@ -393,45 +393,7 @@ elif selected == "Prediction Analytics":
     p1,p2=st.columns(2)
 
     if data:
-        with p1:
-
-            churn_counts = df['churn'].value_counts()
-
-
-            plt.figure(figsize=(4,4))
-            st.markdown('<p style="color:red;font-weight:bold;">Bar plot of Churn counts:</p>', unsafe_allow_html=True)
-
-            sns.barplot(x=churn_counts.index, y=churn_counts.values)
-            plt.xlabel('Churn')
-            plt.ylabel('Count')
-            plt.title('Churn Counts')
-            st.pyplot()
-
-        with p2:
-            st.markdown('<p style="color:red;font-weight:bold;">International_plan VS Churn</p>', unsafe_allow_html=True)
-
-            plt.figure(figsize=(4,4))
-            sns.countplot(x="international_plan", hue="churn", data=df)
-            st.pyplot()
-            
-        st.markdown('<p style="color:red;font-weight:bold;">Churn VS State</p>', unsafe_allow_html=True)
-        plt.figure(figsize=(25,7))
-        sns.countplot(x="state", hue="churn", data=df)
-        st.pyplot()
-
-
-        st.markdown('<p style="color:red;font-weight:bold;">Area Code vs Churn</p>', unsafe_allow_html=True)
-
-        plt.figure(figsize=(8,4))
-        sns.countplot(x="area_code", hue="churn", data=df)
-
-        st.pyplot()
-
-        st.markdown('<p style="color:red;font-weight:bold;">Voice Mail Plan vs Churn</p>', unsafe_allow_html=True)
-
-        plt.figure(figsize=(8,4))
-        sns.countplot(x="voice_mail_plan", hue="churn", data=df)
-        st.pyplot()
+      st.write("hi")
     
     
 
@@ -660,96 +622,3 @@ elif selected == "Register/Login/Profile":
 
 
 
-
-elif selected == "About The Model":
-    bg_image_path = r"about.jpeg.jpeg"
-    import base64
-        
-    def get_base64_of_bin_file(bin_file):
-        with open(bin_file, 'rb') as f:
-             data = f.read()
-             return base64.b64encode(data).decode()
-    
-    bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-    
-    st.markdown(f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/jpg;base64,{bg_image_base64}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
-    </style>
-    """, unsafe_allow_html=True)
-    # Data for each model
-    data_decision_tree = {
-        'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC Score'],
-        'Training': [0.972156862745098, 0.975, 0.832, 0.897841726618705, 0.9141609195402298],
-        'Testing': [0.9747058823529412, 0.96875, 0.8340807174887892, 0.8963855421686747, 0.9150092145331555]
-    }
-
-    data_random_forest = {
-        'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC Score'],
-        'Training': [0.9788235294117648, 1.0, 0.856, 0.9224137931034483, 0.9279999999999999],
-        'Testing': [0.961764705882353, 0.9817073170731707, 0.7219730941704036, 0.8320413436692508, 0.8599709749795824]
-    }
-
-    data_knn = {
-        'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC Score'],
-        'Training': [0.8678431372549019, 0.8958333333333334, 0.11466666666666667, 0.20330969267139481, 0.556183908045977],
-        'Testing': [0.8747058823529412, 0.8125, 0.05829596412556054, 0.1087866108786611, 0.5281324099571607]
-    }
-
-    data_svc = {
-        'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC Score'],
-        'Training': [0.8419607843137255, 0.25, 0.037333333333333336, 0.06496519721577727, 0.5090114942528736],
-        'Testing': [0.8652941176470588, 0.4117647058823529, 0.06278026905829596, 0.10894941634241245, 0.524619653825018]
-    }
-
-    # Creating dataframes
-    df_decision_tree = pd.DataFrame(data_decision_tree)
-    df_random_forest = pd.DataFrame(data_random_forest)
-    df_knn = pd.DataFrame(data_knn)
-    df_svc = pd.DataFrame(data_svc)
-
-    # Converting to percentages
-    df_decision_tree[['Training', 'Testing']] = df_decision_tree[['Training', 'Testing']] * 100
-    df_random_forest[['Training', 'Testing']] = df_random_forest[['Training', 'Testing']] * 100
-    df_knn[['Training', 'Testing']] = df_knn[['Training', 'Testing']] * 100
-    df_svc[['Training', 'Testing']] = df_svc[['Training', 'Testing']] * 100
-
-    st.markdown("<h1 style='color:gold;'>Decision Tree Performance Metrics</h1>", unsafe_allow_html=True)
-    st.dataframe(df_decision_tree, height=300, width=600)
-    
-    st.markdown("<h1 style='color:gold;'>Random Forest Performance Metrics</h1>", unsafe_allow_html=True)
-    st.dataframe(df_random_forest, height=300, width=600)
-    
-    st.markdown("<h1 style='color:gold;'>K-Nearest Neighbors (KNN) Performance Metrics</h1>", unsafe_allow_html=True)
-    st.dataframe(df_knn, height=300, width=600)
-    
-    st.markdown("<h1 style='color:gold;'>Support Vector Classifier (SVC) Performance Metrics</h1>", unsafe_allow_html=True)
-    st.dataframe(df_svc, height=300, width=600)
-    
-    # Data for all models in one DataFrame
-    data = {
-        'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'ROC AUC Score'],
-        'Decision Tree': [0.9678431372549021, 0.9580279955595643, 0.8186666666666668, 0.8812063067003717, 0.9150927203065133],
-        'Random Forest': [0.943529411764706, 0.9793567209848429, 0.6293333333333333, 0.7658206482488022, 0.913704214559387],
-        'KNN': [0.8619607843137256, 0.8880952380952382, 0.07200000000000001, 0.13287531335822061, 0.7268045977011494],
-        'SVC': [0.8454901960784313, 0.3094871794871795, 0.04266666666666667, 0.07430479338277116, 0.5222]  # ROC AUC Score is added as a placeholder
-    }
-
-    # Creating the DataFrame
-    df = pd.DataFrame(data)
-
-    # Converting to percentages
-    df[['Decision Tree', 'Random Forest', 'KNN', 'SVC']] = df[['Decision Tree', 'Random Forest', 'KNN', 'SVC']] * 100
-
-    # Displaying data in Streamlit
-    st.markdown("<h1 style='color:gold;'>All Models Cross Validation Score(SVC) Performance Metrics</h1>", unsafe_allow_html=True)
-
-    st.dataframe(df)
-
-
-    st.markdown('<h1 style="color:red;font-weight:bold;">Based On The  Cross Validation Scores We Finallized Decision Tree Model</h1>', unsafe_allow_html=True)
