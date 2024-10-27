@@ -122,7 +122,7 @@ with st.sidebar:
         options=["Home",  "Prediction Analytics","Register/Login/Profile"],  # required
         icons=["house", "bar-chart", "person-square"],  # optional
          menu_icon="box-arrow-in-right",
-        default_index=1,  # optional
+        default_index=0,  # optional
     )
 
 if selected == "Home":
@@ -185,20 +185,24 @@ if selected == "Home":
 
                 if st.button("Predict"):
                     st.write("HI")
-                   # try:
-                    
-                    result = model.predict(df)
-                    st.write(result)
-                    laundering = ["Yes" if pred == 1 else "No" for pred in result]
-                    df["is laundering"] = laundering
+                    try:
+                        result = model.predict(df)
+                        st.write(result)
+                        laundering = ["Yes" if pred == 1 else "No" for pred in result]
+                        df["is laundering"] = laundering
+    
+                        laundering = df['is laundering'].value_counts()
 
-                    churn_counts = df['is laundering'].value_counts()
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {laundering.count("Yes")}</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(df["is laundering"])}</p>', unsafe_allow_html=True)
+                        st.title("Go to Prediction Analytics to view analytics")
+                   
 
-                    st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {churn_counts["Yes"]}</p>', unsafe_allow_html=True)
-                    st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(churn)}</p>', unsafe_allow_html=True)
-                    st.title("Go to Prediction Analytics to view analytics")
-               # except Exception as e:
-                          #  st.error("Please upload your file before predicting...")
+                    except Exception as e:
+                        st.error("Please upload your file before predicting...")
+                        
+                        
+        
 
                     
         
