@@ -24,67 +24,6 @@ except Exception as e:
     st.error(f"An error occurred while loading the model: {e}")
 ####################################################################################
 
-db_user = '2yasPb2k6DKrXZH.root'
-db_password = 'E28f3eorNGjxx6K4'
-db_host = 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com'
-db_port = '4000'
-db_name = 'test'
-ca_path = '/path/to/ca_cert.pem'  
-
-# creating the sql syntax for connecting with the database
-
-connection_string = (
-    f'mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?'
-    f'ssl_ca={ca_path}&ssl_verify_cert=true'
-
-)
-
-# ca_path 
-#  CA certificate is used to verify the identity of the database server to ensure that the connection is secure.
-
-def add_user(first_name, last_name, sur_name, number, mail, password):
-    try:
-        engine = create_engine(connection_string)
-        conn = engine.connect()
-
-        insert_query =text("""
-            INSERT INTO users (first_name, last_name, sur_name, number, mail, password)
-            VALUES (:first_name, :last_name, :sur_name, :number, :mail, :password)
-        """)
-        
-        conn.execute(insert_query, {
-            'first_name': first_name,
-            'last_name': last_name,
-            'sur_name': sur_name,
-            'number': number,
-            'mail': mail,
-            'password': password
-        })
-        
-        conn.commit()
-        conn.close()
-        
-        st.success("User added successfully!")
-    except SQLAlchemyError as e:
-        st.error(f"An error occurred: {str(e)}")
-
-############################################################################
-
-
-
-try:
-    engine = create_engine(connection_string)
-    conn = engine.connect()
-    df_user= pd.read_sql('SELECT * FROM users', conn)
-
-    df_user['number'] = df_user['number'].astype(str)
-
-    conn.close()
-    engine.dispose()
-except SQLAlchemyError as e:
-    st.error(f"An error occurred: {str(e)}")
-
-
 
 df=None
 def get_base64_of_bin_file(bin_file):
@@ -144,13 +83,13 @@ if selected == "Home":
         dic={}
 
         #st.title("**anti money laundering**")
-        st.markdown('<h2 style="color:yellow;">There You Can Predict The Churn Of The Customers</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:yellow;">There You Can Check The Trasaction</h2>', unsafe_allow_html=True)
 
 
         st.markdown('<h4 style="color:orange;">Select Prediction Method</h4>', unsafe_allow_html=True)
 
-        prediction_method = st.radio('', ('Predict Churn Record-wise', 'Predict Churn for Entire DataFrame'))
-        if prediction_method=='Predict Churn Record-wise':
+        prediction_method = st.radio('', ('Predict Record-wise', 'Predict for Entire DataFrame'))
+        if prediction_method=='Predict Record-wise':
             from datetime import datetime
 
             c1, c2, c3 = st.columns([1, 1, 1.5])
@@ -177,16 +116,16 @@ if selected == "Home":
             
             with c3:
                 st.markdown('<p style="color:red;">Receiving Currency</p>', unsafe_allow_html=True)
-                receiving_currency = st.selectbox("Receiving Currency", ["USD", "EUR", "INR", "GBP"], key='receiving_currency')
+                receiving_currency = st.selectbox("Receiving Currency",['US Dollar', 'Bitcoin', 'Euro', 'Australian Dollar', 'Yuan','Rupee', 'Mexican Peso', 'Yen', 'UK Pound', 'Ruble','Canadian Dollar', 'Swiss Franc', 'Brazil Real', 'Saudi Riyal', 'Shekel'], key='receiving_currency')
             
                 st.markdown('<p style="color:red;">Amount Paid</p>', unsafe_allow_html=True)
                 amount_paid = st.number_input("Amount Paid", key='amount_paid')
             
                 st.markdown('<p style="color:red;">Payment Currency</p>', unsafe_allow_html=True)
-                payment_currency = st.selectbox("Payment Currency", ["USD", "EUR", "INR", "GBP"], key='payment_currency')
+                payment_currency = st.selectbox("Payment Currency", ['US Dollar', 'Bitcoin', 'Euro', 'Australian Dollar', 'Yuan','Rupee', 'Yen', 'Mexican Peso', 'UK Pound', 'Ruble', 'Canadian Dollar', 'Swiss Franc', 'Brazil Real', 'Saudi Riyal','Shekel'], key='payment_currency')
             
                 st.markdown('<p style="color:red;">Payment Format</p>', unsafe_allow_html=True)
-                payment_format = st.selectbox("Payment Format", ["Online", "Cheque", "Cash"], key='payment_format')
+                payment_format = st.selectbox("Payment Format", ['Reinvestment', 'Cheque', 'Credit Card', 'ACH', 'Cash', 'Wire','Bitcoin'], key='payment_format')
             
             # Extracting time-related features from the timestamp
             try:
