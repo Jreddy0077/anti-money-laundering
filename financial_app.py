@@ -131,7 +131,7 @@ if selected == "Home":
             try:
                 if timestamp:
                     # Parse the timestamp
-                    dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+                    dt = datetime.strptime(timestamp, "%Y/%m/%d %H:%M:%S")
                     day = dt.day
                     hour = dt.hour
                     minute = dt.minute
