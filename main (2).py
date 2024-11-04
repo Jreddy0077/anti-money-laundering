@@ -9,12 +9,13 @@ import base64
 from sqlalchemy import create_engine,text
 import pymysql
 from sqlalchemy.exc import SQLAlchemyError
+from xgboost import XGBClassifier
 import re
 
 
 
 import os
-model_path = os.path.join(os.path.dirname(__file__), "aml.pkl")
+model_path = os.path.join(os.path.dirname(__file__), "aml_final.pkl")
 try:
     with open(model_path, "rb") as f:
         model = pickle.load(f)
@@ -23,67 +24,6 @@ except FileNotFoundError:
 except Exception as e:
     st.error(f"An error occurred while loading the model: {e}")
 ####################################################################################
-
-db_user = '2yasPb2k6DKrXZH.root'
-db_password = 'E28f3eorNGjxx6K4'
-db_host = 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com'
-db_port = '4000'
-db_name = 'test'
-ca_path = '/path/to/ca_cert.pem'  
-
-# creating the sql syntax for connecting with the database
-
-connection_string = (
-    f'mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?'
-    f'ssl_ca={ca_path}&ssl_verify_cert=true'
-
-)
-
-# ca_path 
-#  CA certificate is used to verify the identity of the database server to ensure that the connection is secure.
-
-def add_user(first_name, last_name, sur_name, number, mail, password):
-    try:
-        engine = create_engine(connection_string)
-        conn = engine.connect()
-
-        insert_query =text("""
-            INSERT INTO users (first_name, last_name, sur_name, number, mail, password)
-            VALUES (:first_name, :last_name, :sur_name, :number, :mail, :password)
-        """)
-        
-        conn.execute(insert_query, {
-            'first_name': first_name,
-            'last_name': last_name,
-            'sur_name': sur_name,
-            'number': number,
-            'mail': mail,
-            'password': password
-        })
-        
-        conn.commit()
-        conn.close()
-        
-        st.success("User added successfully!")
-    except SQLAlchemyError as e:
-        st.error(f"An error occurred: {str(e)}")
-
-############################################################################
-
-
-
-try:
-    engine = create_engine(connection_string)
-    conn = engine.connect()
-    df_user= pd.read_sql('SELECT * FROM users', conn)
-
-    df_user['number'] = df_user['number'].astype(str)
-
-    conn.close()
-    engine.dispose()
-except SQLAlchemyError as e:
-    st.error(f"An error occurred: {str(e)}")
-
 
 
 df=None
@@ -95,7 +35,7 @@ def get_base64_of_bin_file(bin_file):
 
 
 
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 # Custom CSS to remove padding and margins
 
@@ -120,10 +60,10 @@ st.markdown(custom_css, unsafe_allow_html=True)
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",  # required
-        options=["Home", "Prediction Analytics", "Register/Login/Profile"],  # required
-        icons=["house", "bar-chart", "person-square"],  # optional
+        options=["Home", "Prediction Analytics"],  # required
+        icons=["house", "bar-chart"],  # optional
          menu_icon="box-arrow-in-right",
-        default_index=2,  # optional
+        default_index=0,  # optional
     )
 
 # Pages based on selected option
@@ -144,216 +84,260 @@ if selected == "Home":
         dic={}
 
         #st.title("**anti money laundering**")
-        st.markdown('<h2 style="color:yellow;">There You Can Predict The Churn Of The Customers</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:yellow;">There You Can Check The Trasaction</h2>', unsafe_allow_html=True)
 
 
         st.markdown('<h4 style="color:orange;">Select Prediction Method</h4>', unsafe_allow_html=True)
 
-        prediction_method = st.radio('', ('Predict Churn Record-wise', 'Predict Churn for Entire DataFrame'))
-        if prediction_method=='Predict Churn Record-wise':
-            c1, c2, c3, c4, c5, c6 = st.columns([1,1,1,1,1,1.3])
+        prediction_method = st.radio('', ('Predict Record-wise', 'Predict for Entire DataFrame'))
+        if prediction_method=='Predict Record-wise':
+            c1, c2, c3 = st.columns([1, 1, 1.5])
+            
             with c1:
-                states = ['OH', 'NJ', 'OK', 'MA', 'MO', 'LA', 'WV', 'IN', 'RI', 'IA', 'MT',
-                        'NY', 'ID', 'VA', 'TX', 'FL', 'CO', 'AZ', 'SC', 'WY', 'HI', 'NH',
-                        'AK', 'GA', 'MD', 'AR', 'WI', 'OR', 'MI', 'DE', 'UT', 'CA', 'SD',
-                        'NC', 'WA', 'MN', 'NM', 'NV', 'DC', 'VT', 'KY', 'ME', 'MS', 'AL',
-                        'NE', 'KS', 'TN', 'IL', 'PA', 'CT', 'ND']
-
-                st.markdown('<p style="color:red;">State</p>', unsafe_allow_html=True)
-                selected_states = st.selectbox("", states, key='selected_states')
-
-                st.markdown('<p style="color:red;">Account Length</p>', unsafe_allow_html=True)
-                account_length = st.number_input("", key='account_length')
-
-                st.markdown('<p style="color:red;">Area Code</p>', unsafe_allow_html=True)
-                selected_code = st.selectbox("", (415, 408, 510), key='selected_code')
-
+                st.markdown('<p style="color:red;">Timestamp EX:2022/09/01 00:20</p>', unsafe_allow_html=True)
+                timestamp = st.text_input("YYYY/MM/DD HH:MM", key='timestamp')
+            
+                st.markdown('<p style="color:red;">From Bank</p>', unsafe_allow_html=True)
+                from_bank = st.text_input("", key='from_bank')
+            
+                st.markdown('<p style="color:red;">From Account</p>', unsafe_allow_html=True)
+                from_account = st.text_input("", key='from_account')
+            
             with c2:
-                st.markdown('<p style="color:red;">International Plan</p>', unsafe_allow_html=True)
-                international_plan = st.selectbox("", ("yes", "no"), key='international_plan')
-
-                st.markdown('<p style="color:red;">Voice Mail Plan</p>', unsafe_allow_html=True)
-                voice_mail = st.selectbox("", ("yes", "no"), key='voice_mail')
-
-                st.markdown('<p style="color:red;">Number of Voicemail Messages</p>', unsafe_allow_html=True)
-                number_vmail_messages = st.number_input("", key='number_vmail_messages')
-
+                st.markdown('<p style="color:red;">To Bank</p>', unsafe_allow_html=True)
+                to_bank = st.text_input("", key='to_bank')
+            
+                st.markdown('<p style="color:red;">To Account</p>', unsafe_allow_html=True)
+                to_account = st.text_input("", key='to_account')
+            
+                st.markdown('<p style="color:red;">Amount Received</p>', unsafe_allow_html=True)
+                amount_received = st.number_input("", key='amount_received')
+            
             with c3:
-                st.markdown('<p style="color:red;">Total Day Minutes</p>', unsafe_allow_html=True)
-                total_day_minutes = st.number_input("", key='total_day_minutes')
+                st.markdown('<p style="color:red;">Receiving Currency</p>', unsafe_allow_html=True)
+                receiving_currency = st.selectbox("",['US Dollar', 'Bitcoin', 'Euro', 'Australian Dollar', 'Yuan','Rupee', 'Mexican Peso', 'Yen', 'UK Pound', 'Ruble','Canadian Dollar', 'Swiss Franc', 'Brazil Real', 'Saudi Riyal', 'Shekel'], key='receiving_currency')
+            
+                st.markdown('<p style="color:red;">Amount Paid</p>', unsafe_allow_html=True)
+                amount_paid = st.number_input("", key='amount_paid')
+            
+                st.markdown('<p style="color:red;">Payment Currency</p>', unsafe_allow_html=True)
+                payment_currency = st.selectbox("", ['US Dollar', 'Bitcoin', 'Euro', 'Australian Dollar', 'Yuan','Rupee', 'Yen', 'Mexican Peso', 'UK Pound', 'Ruble', 'Canadian Dollar', 'Swiss Franc', 'Brazil Real', 'Saudi Riyal','Shekel'], key='payment_currency')
+            
+                st.markdown('<p style="color:red;">Payment Format</p>', unsafe_allow_html=True)
+                payment_format = st.selectbox("", ['Reinvestment', 'Cheque', 'Credit Card', 'ACH', 'Cash', 'Wire','Bitcoin'], key='payment_format')
+            
+            # Extracting time-related features from the timestamp
 
-                st.markdown('<p style="color:red;">Total Day Calls</p>', unsafe_allow_html=True)
-                total_day_calls = st.number_input("", key='total_day_calls')
-
-                st.markdown('<p style="color:red;">Total Day Charge</p>', unsafe_allow_html=True)
-                total_day_charge = st.number_input("", key='total_day_charge')
-
-            with c4:
-                st.markdown('<p style="color:red;">Total Evening Minutes</p>', unsafe_allow_html=True)
-                total_eve_minutes = st.number_input("", key='total_eve_minutes')
-
-                st.markdown('<p style="color:red;">Total Evening Calls</p>', unsafe_allow_html=True)
-                total_eve_calls = st.number_input("", key='total_eve_calls')
-
-                st.markdown('<p style="color:red;">Total Evening Charge</p>', unsafe_allow_html=True)
-                total_eve_charge = st.number_input("", key='total_eve_charge')
-
-            with c5:
-                st.markdown('<p style="color:red;">Total Night Minutes</p>', unsafe_allow_html=True)
-                total_night_minutes = st.number_input("", key='total_night_minutes')
-
-                st.markdown('<p style="color:red;">Total Night Calls</p>', unsafe_allow_html=True)
-                total_night_calls = st.number_input("", key='total_night_calls')
-
-                st.markdown('<p style="color:red;">Total Night Charge</p>', unsafe_allow_html=True)
-                total_night_charge = st.number_input("", key='total_night_charge')
-
-            with c6:
-                st.markdown('<p style="color:red;">Total International Minutes</p>', unsafe_allow_html=True)
-                total_intl_minutes = st.number_input("", key='total_intl_minutes')
-
-                st.markdown('<p style="color:red;">Total International Calls</p>', unsafe_allow_html=True)
-                total_intl_calls = st.number_input("", key='total_intl_calls')
-
-                st.markdown('<p style="color:red;">Total International Charge</p>', unsafe_allow_html=True)
-                total_intl_charge = st.number_input("", key='total_intl_charge')
-
-                st.markdown('<p style="color:red;">Number of Customer Service Calls</p>', unsafe_allow_html=True)
-                number_customer_service_calls = st.number_input("", key='number_customer_service_calls')
+            data =[[timestamp, from_bank, from_account, to_bank, to_account, amount_received, 
+                     receiving_currency, amount_paid, payment_currency, payment_format]]
+            
+            columns = ["time stamp", "from bank", "account", "to bank", "account.1", "amount received", 
+                            "receiving currency", "amount paid", "payment currency", "payment format"]
+        
 
 
-
-            # Calculations
-            total_charge = total_day_charge + total_eve_charge + total_night_charge
-            total_days = account_length * 30
-
-            if total_days != 0:
-                charge_per_day = total_charge / total_days
-            else:
-                charge_per_day = 0
-
-            l_var = [
-                selected_states, 
-                account_length, 
-                selected_code, 
-                international_plan, 
-                voice_mail, 
-                number_vmail_messages, 
-                total_day_minutes, 
-                total_day_calls, 
-                total_day_charge, 
-                total_eve_minutes, 
-                total_eve_calls, 
-                total_eve_charge, 
-                total_night_minutes, 
-                total_night_calls, 
-                total_night_charge, 
-                total_intl_minutes, 
-                total_intl_calls, 
-                total_intl_charge, 
-                number_customer_service_calls,
-                total_day_minutes + total_eve_minutes + total_night_minutes, 
-                total_day_calls + total_night_calls + total_eve_calls, 
-                total_charge,
-                total_days,
-                account_length / 4 if account_length != 0 else 0,
-                account_length / 12 if account_length != 0 else 0,
-                charge_per_day]
+            try:
+                df = pd.DataFrame(data, columns=columns)
+            
+                    
+                
+                
+                df["time stamp"] = pd.to_datetime(df["time stamp"])
 
                     
-        
-        
-        
+                l_account=esin_list = [
+                '100428660', '1004286a8', '100428660', '100428780', '100428660', '100428738', 
+                '1004287c8', '1004286a8', '1004286f0', '100428780', '100428738', '1004287c8', 
+                '1004286a8', '1004288e8', '1004289c0', '100428780', '100428978', '100428738', 
+                '1004286f0', '1004287c8', '100428660', '100428660', '1004286a8', '1004286a8', 
+                '100428660', '80266f880', '812d22980', '1004286a8', '811c599a0', '811c597b0', 
+                '8021353d0', '100428978', '100428a51', '812a09d40', '812d0c3c0', '811b6e170', 
+                '811b83280', '812a09cf0', '80452d470', '800737690', '100428660', '1004286a8', 
+                '100428978', '80266f880', '100428810', '812d22980', '100428738', '811c597b0', 
+                '811c599a0', '8021353d0', '1004286f0', '100428780', '812a09d40', '100428a51', 
+                '811b83280', '812d0c3c0', '812a09cf0', '1004288a0', '811b6e170', '1004287c8'
+]
+                df["currency_focus"]=df["account"].apply(lambda x: "focus" if x in l_account else "not focus")
+
+                l_pf=payment_methods = [
+                'cheque', 'cheque', 'cash', 'cheque', 'credit card', 'cheque', 'cheque', 'cash', 
+                'cheque', 'credit card', 'credit card', 'credit card', 'credit card', 'cheque', 
+                'cheque', 'cash', 'cheque', 'cash', 'credit card', 'cash', 'cheque', 'credit card', 
+                'cheque', 'credit card', 'cash', 'ach', 'ach', 'cash', 'ach', 'ach', 'ach', 
+                'cheque', 'bitcoin', 'ach', 'ach', 'ach', 'ach', 'ach', 'ach', 'ach'
+    ]
+                df["pf_focus"]=df["payment format"].apply(lambda x: "focus" if x in l_pf else "not focus")
+
+
+                l_pc=['saudi riyal','euro',
+                                'euro',
+                                'euro',
+                                'canadian dollar',
+                                'yen',
+                                'yuan',
+                                'rupee',
+                                'us dollar',
+                                'us dollar']
             
-                
-            data2 = [l_var]
+                df["pc_focus"]=df["payment currency"].apply(lambda x: "focus" if x in l_pc else "not focus")
 
-            columns = ['state', 'account_length', 'area_code', 'international_plan',
-                    'voice_mail_plan', 'number_vmail_messages', 'total_day_minutes',
-                    'total_day_calls', 'total_day_charge', 'total_eve_minutes',
-                    'total_eve_calls', 'total_eve_charge', 'total_night_minutes',
-                    'total_night_calls', 'total_night_charge', 'total_intl_minutes',
-                    'total_intl_calls', 'total_intl_charge',
-                    'number_customer_service_calls','total_min', 'total_call',
-                'total_charge', 'plan_day', 'plan_weeks', 'plan_years', 'charge_day']
-
-            df2= pd.DataFrame(data2, columns=columns)
-            import os
-# C:\Users\User\project\strnew.pkl
-
+                l_rc=['us dollar',
+                'euro',
+                'swiss franc',
+                'euro',
+                'uk pound',
+                'saudi riyal',
+                'yen',
+                'saudi riyal',
+                'saudi riyal',
+                'euro',
+                'yuan',
+                'rupee',
+                'saudi riyal',
+                'bitcoin',
+                'saudi riyal',
+                'saudi riyal',
+                'saudi riyal',
+                'australian dollar',
+                'saudi riyal',
+                'ruble']
             
-            
+                df["rc_focus"]=df["receiving currency"].apply(lambda x: "focus" if x in l_rc else "not focus")
+
+                l_account_1=[
+                '811c599a0', '8021353d0', '811c597b0', '80266f880', '811ed7df0', '812a09cf0', 
+                '811d80c30', '811b83280', '80aebecb0', '8079ddc30', '8028f2650', '809cc4600', 
+                '80465e020', '8106b1750', '80098dc70', '800924840', '812a09d40', '805d4c850', 
+                '8012cd590', '80c6f48a0'
+            ]
+                df["account.1_focus"]=df["account.1"].apply(lambda x: "focus" if x in l_account_1 else "not focus")
+
+                df["day"]=df["time stamp"].dt.day
+                df["hour"]=df["time stamp"].dt.hour
+                df["min"]=df["time stamp"].dt.minute
+                df['day_type'] = df['time stamp'].dt.dayofweek.apply(lambda x: 'weekday' if x < 5 else 'weekend')
+                df['day_of_week'] = df['time stamp'].dt.day_name()
+
+
+                level1=[1,2,3,4,5,6,7,8,9,10,]
+                level2=[11,12,13,14]
+                level3=[15,16,17,18]
+
+
+
+                def intensity(x):
+                                if x in level1:
+                                    return "high"
+                                elif x in level2:
+                                    return "medium"
+                                else:
+                                    return "low"
+                df["day_intensityy"]=df["day"].apply(intensity)
+
+                df.drop("time stamp",axis=1,inplace=True)
+
+
                 
-            if st.button("Predict"):
-                with st.spinner("Please wait while predicting...."):
-                    time.sleep(0.5)
-                
-                    try:
-                        result = model.predict(df2)
-                        if result[0] == 0:
-                            st.write("**Congratulations! The customer is likely to continue their subscription.** 🎉😊")
-                            st.balloons()  # This simulates a celebratory animation
-                        else:
-                            st.write("**Bad luck! The customer is predicted to churn and discontinue their subscription.** 😞")
-                            st.toast('bad luck', icon="👎")
-                    except Exception as e:
-                        st.error(f"An error occurred during prediction: {e}")
-    
-                
-        if prediction_method=='Predict Churn for Entire DataFrame':
+
+
+
                 
 
-                st.markdown('<p style="color:red;">Select file type</p>', unsafe_allow_html=True)
-
-        
-                file_type = st.selectbox("", ("CSV", "Excel"))
-                #uploaded_file=None
-
-
-        
-                uploaded_file = st.file_uploader(f"Upload {file_type} file",type=[file_type.lower()])
-
-                if file_type=="CSV":
-
-                    try:
-                        df=pd.read_csv(uploaded_file)
-                        df.to_csv("df.csv",index=False)
-                    except Exception as e:
-                                    st.write("Not Uploaded")
-                else:
-                    try:
-                        df=pd.read_excel(uploaded_file)
-                        df.to_excel("df.xlsx",index=False)
-
-                    except Exception as e:
-                                    st.write("Not Uploaded")
-
+               
                     
-        
-                #with c1:
+                
+                    
+            except ValueError:
+                st.error("Incorrect timestamp format. Please use YYYY-MM-DD HH:MM:SS.")
+
+
+            
+            
+            
+
+
+            
+           
+            
+           
+
+######################################################
+
+            
+            if sum(list(df.isnull().sum().values)) == 0:
+                
                 if st.button("Predict"):
                     with st.spinner("Please wait while predicting...."):
-                        time.sleep(1)
-                    
+                        time.sleep(0.5)
                     
                         try:
                             result = model.predict(df)
-                            laundering = ["Yes" if pred == 1 else "No" for pred in result]
-                            df["laundering"] = laundering
-        
-                            l_counts = df['laundering'].value_counts()
-        
-                            st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {l_counts["Yes"]}</p>', unsafe_allow_html=True)
-                            st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(laundering)}</p>', unsafe_allow_html=True)
-                            st.title("Go to Prediction Analytics to view analytics")
-                                    
-        
-        
+                            if result[0] == 0:
+                                st.write("**Not laundering** 🎉😊")
+                                st.balloons()  # This simulates a celebratory animation
+                            else:
+                                st.write("**Laundering** 😞")
+                                st.toast('bad luck', icon="👎")
                         except Exception as e:
-                                st.error("Please upload your file before predicting...")
-                        
+                            st.error(f"An error occurred during prediction: {e}")
+            else:
+                st.markdown('<p style="color:red;">Please Enter All The Fields</p>', unsafe_allow_html=True)
+
+                 
+                
+                
+        else:
+            st.markdown('<p style="color:red;">Select file type</p>', unsafe_allow_html=True)
+
+    
+            file_type = st.selectbox("", ("CSV", "Excel"))
+            #uploaded_file=None
+
+
+    
+            uploaded_file = st.file_uploader(f"Upload {file_type} file",type=[file_type.lower()])
+
+            if file_type=="CSV":
+
+                try:
+                    df=pd.read_csv(uploaded_file)
+                    df.to_csv("df.csv",index=False)
+                except Exception as e:
+                                st.write("Not Uploaded")
+            else:
+                try:
+                    df=pd.read_excel(uploaded_file)
+                    df.to_excel("df.xlsx",index=False)
+
+                except Exception as e:
+                                st.write("Not Uploaded")
+
+                
+    
+            #with c1:
+            if st.button("Predict"):
+                with st.spinner("Please wait while predicting...."):
+                    time.sleep(1)
+                
+                
+                    try:
+                        result = model.predict(df)
+                        laundering = ["Yes" if pred == 1 else "No" for pred in result]
+                        df["laundering"] = laundering
+    
+                        l_counts = df['laundering'].value_counts()
+    
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {l_counts["Yes"]}</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(laundering)}</p>', unsafe_allow_html=True)
+                        st.title("Go to Prediction Analytics to view analytics")
+                                
+    
+    
+                    except Exception as e:
+                            st.error("Please upload your file before predicting...")
                     
-                        
+                
+                    
 
 
 elif selected == "Prediction Analytics":
@@ -361,21 +345,7 @@ elif selected == "Prediction Analytics":
 
 
 
-    bg_image_path = r"hone1.png"
-
-    
-    bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-
-    st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+   
     with st.container():
          st.title('Churn Prediction Analysis...........')
     try:
@@ -396,228 +366,5 @@ elif selected == "Prediction Analytics":
       st.write("hi")
     
     
-
-
-elif selected == "Register/Login/Profile":
-        
-        bg_image_path = r"bg_home.jpg.png"
-        
-        def get_base64_of_bin_file(bin_file):
-            with open(bin_file, 'rb') as f:
-                 data = f.read()
-                 return base64.b64encode(data).decode()
-        
-        bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-        
-        st.markdown(f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{bg_image_base64}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
-########################################################################3333333333
-        
-#################################################################################
-        l_number = list(df_user["number"])
-
-##############################################################################################
-
-   
-    
-
-        st.markdown('<h2 style="color:orange;">Welcome To Churn Prediction Application</h2>', unsafe_allow_html=True)
-
-
-
-
-
-        with st.container():
-            st.markdown('<p style="color:red;">To access the app please Login or Signup</p>', unsafe_allow_html=True)
-            st.markdown('<p style="color:red;">Select an option:</p>', unsafe_allow_html=True)
-            option = st.selectbox('', ('Login',"Signup"))
-
-
-        col1, col2 ,col3= st.columns([2,1,3])
-
-        
-
-
-       
-
-
-
-        if option=="Login":
-            import streamlit as st
-            import pandas as pd
-            
-            # Assuming l_number and df_user are already defined
-            
-            with col1:
-                st.markdown('<p style="color:gold;">Enter Your Mobile Number..</p>', unsafe_allow_html=True)
-                number1 = st.text_input("", key="number1")
-            
-                # Initialize mobile check
-                mobile = False
-            
-                # Check if the number is in the list
-                if number1 in l_number:
-                    st.markdown('<p style="color:gold;">Mobile Number Is Correct</p>', unsafe_allow_html=True)
-                    mobile = True
-                else:
-                    st.markdown('<p style="color:gold;">Incorrect Mobile Number</p>', unsafe_allow_html=True)
-            
-                # UI for password input
-                st.markdown('<p style="color:gold;">Enter Your Password..</p>', unsafe_allow_html=True)
-                password1 = st.text_input("", key="password1", type="password")
-            
-                # Initialize password check
-                passs = False
-            
-                if mobile:
-                    # Check if the number is present in the DataFrame
-                    if number1 in df_user["number"].values:
-                        # Get the original password for the entered number
-                        password_org = df_user[df_user["number"] == number1]["password"].values[0]
-            
-                        # Check if the entered password matches the original password
-                        if password_org == password1:
-                            st.markdown('<p style="color:gold;">Password Is Correct</p>', unsafe_allow_html=True)
-                            passs = True
-                        else:
-                            st.markdown('<p style="color:gold;">Incorrect Password</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<p style="color:gold;">Mobile Number Not Found in Database</p>', unsafe_allow_html=True)
-                
-                # Check login button
-                if st.button("Login"):
-                    if mobile and passs:
-                        st.markdown('<p style="color:gold;">Successfully Logged In</p>', unsafe_allow_html=True)
-                    else:
-                        st.markdown('<p style="color:gold;">Enter The Details Correctly</p>', unsafe_allow_html=True)
-            
-            with col3:
-                if mobile and passs:
-                    if st.button("Show Profile"):
-                        user_info = df_user[df_user["number"] == number1].iloc[0]
-                        name = f"{user_info['first_name']} {user_info['last_name']} {user_info['sur_name']}"
-                        mail = user_info['mail']
-                        contact = number1
-            
-                        st.write("     ")
-                        st.markdown(f'<h3 style="color:red;">Name: {name}</h3>', unsafe_allow_html=True)
-                        st.markdown(f'<h3 style="color:red;">Contact: {contact}</h3>', unsafe_allow_html=True)
-                        st.markdown(f'<h3 style="color:red;">Mail: {mail}</h3>', unsafe_allow_html=True)
-            
-            
-                                    
-            
-                        
-                                
-
-        coll1,coll2=st.columns(2)
-        if option == "Signup":
-            with coll1:
-                st.markdown('<p style="color:gold;">Enter The First Name:</p>', unsafe_allow_html=True)
-                first_name = st.text_input("", key="first_name")
-                st.markdown('<p style="color:gold;">Enter The Surname:</p>', unsafe_allow_html=True)
-                sur_name = st.text_input("", key="sur_name")
-
-                st.markdown('<p style="color:gold;">Enter The Last Name:</p>', unsafe_allow_html=True)
-                last_name = st.text_input("", key="last_name")
-                st.markdown('<p style="color:gold;">Enter Your Mobile Number:</p>', unsafe_allow_html=True)
-                number = st.text_input("", key="number")
-
-                if number.isnumeric() and number[0] in "9876" and len(number) == 10:
-                    st.markdown('<p style="color:green;">Number is valid</p>', unsafe_allow_html=True)
-                    number_val = True
-                else:
-                    st.markdown('<p style="color:red;">Number is invalid</p>', unsafe_allow_html=True)
-                    number_val = False
-
-               
-
-           
-
-            #with coll2:
-
-                st.markdown('<p style="color:gold;">Enter The Mail</p>', unsafe_allow_html=True)
-                mail = st.text_input("", key="maill")
-
-                def is_valid_email(email):
-                    pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                    return pattern.match(email) is not None
-
-                if is_valid_email(mail):
-                    st.markdown('<p style="color:green;">The email address is valid</p>', unsafe_allow_html=True)
-                    mail_val = True
-                else:
-                    st.markdown('<p style="color:red;">The email address is invalid</p>', unsafe_allow_html=True)
-                    mail_val = False
-
-                def is_valid_password(password):
-                    pattern = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d@#$!%*?&]{8,16}$')
-                    return pattern.match(password) is not None
-
-       
-                
-                st.markdown('<p style="color:gold;">Enter the password</p>', unsafe_allow_html=True)
-                password = st.text_input("", key="password", type="password")
-
-                if is_valid_password(password):
-                    st.markdown('<p style="color:green;">The password is valid</p>', unsafe_allow_html=True)
-                    password_val = True
-                else:
-                    st.markdown('<p style="color:red;">The password should have at least one lowercase letter, one uppercase letter, one digit, one special character (@$!%*?&) and be 8-16 characters long.</p>', unsafe_allow_html=True)
-                    password_val = False
-
-                st.markdown('<p style="color:gold;">Confirm the password</p>', unsafe_allow_html=True)
-                c_password = st.text_input("", key="c_password", type="password")
-
-                if c_password == password:
-                    st.markdown('<p style="color:green;">Password Is Matched</p>', unsafe_allow_html=True)
-                    c_password_val = True
-                else:
-                    st.markdown('<p style="color:red;">Password Is Not Matches</p>', unsafe_allow_html=True)
-                    c_password_val = False
-                
-        
-
-            if st.button("Register"):
-                l_password = list(df_user["password"])
-
-                l_number = list(df_user["number"])
-                l_mail = list(df_user["mail"])
-                
-
-                
-                
-                if (number) in l_number:
-                    st.markdown('<p style="color:red;">This Number is Already Registered</p>', unsafe_allow_html=True)
-                elif mail in l_mail:
-                    st.markdown('<p style="color:red;">This mail is Already Registered</p>', unsafe_allow_html=True)
-                elif password in l_password:
-                    st.markdown('<p style="color:red;">This password is Already Registered</p>', unsafe_allow_html=True)
-
-
-                elif c_password_val and password_val and mail_val and number_val:
-
-                    
-                
-
-                    #new_user = [first_name, last_name, sur_name, (number), mail, password]
-
-                    add_user(first_name, last_name, sur_name, number, mail, password)
-
-
-
-
-                    
-                    st.markdown('<p style="color:green;">Successfully Registered</p>', unsafe_allow_html=True)
-                else:
-                    st.markdown('<p style="color:red;">You Have Entered Something Wrong</p>', unsafe_allow_html=True)
 
 
