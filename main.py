@@ -282,9 +282,13 @@ if selected == "Home":
                         try:
                             result = model.predict(df)
                             if result[0] == 0:
-                                st.write("**Not laundering** 🎉😊")
+                                st.markdown('<p style="color:red;">Not laundering** 🎉😊</p>', unsafe_allow_html=True)
+
+                                
                             else:
-                                st.write("**Laundering** 😞")
+                                st.markdown('<p style="color:red;">Laundering** 😞</p>', unsafe_allow_html=True)
+
+                                
                                 st.toast('bad luck', icon="👎")
                         except Exception as e:
                             st.error(f"An error occurred during prediction: {e}")
