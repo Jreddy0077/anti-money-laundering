@@ -35,7 +35,7 @@ def get_base64_of_bin_file(bin_file):
 
 
 
-#st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
 # Custom CSS to remove padding and margins
 
@@ -282,11 +282,11 @@ if selected == "Home":
                         try:
                             result = model.predict(df)
                             if result[0] == 0:
-                                st.markdown('<p style="color:red;">Not laundering** 🎉😊</p>', unsafe_allow_html=True)
+                                st.markdown('<h2 style="color:red;">Not laundering** 🎉😊</h2>', unsafe_allow_html=True)
 
                                 
                             else:
-                                st.markdown('<p style="color:red;">Laundering** 😞</p>', unsafe_allow_html=True)
+                                st.markdown('<h2 style="color:red;">Laundering** 😞</h2>', unsafe_allow_html=True)
 
                                 
                                 st.toast('bad luck', icon="👎")
