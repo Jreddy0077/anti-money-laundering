@@ -359,7 +359,7 @@ elif selected == "Prediction Analytics":
 
    
     with st.container():
-         st.title('Churn Prediction Analysis...........')
+         st.title('Transactions Analysis...........')
     try:
          df = pd.read_csv("df.csv")
          data=True
