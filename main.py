@@ -68,7 +68,7 @@ with st.sidebar:
 
 # Pages based on selected option
 if selected == "Home":
-        bg_image_path = r"bg_home1.jpg.png"
+        bg_image_path = r"aml_bg1.png"
         bg_image_base64 = get_base64_of_bin_file(bg_image_path)
         st.markdown(f"""
         <style>
