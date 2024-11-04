@@ -89,6 +89,15 @@ if selected == "Home":
 
         st.markdown('<h4 style="color:orange;">Select Prediction Method</h4>', unsafe_allow_html=True)
 
+        st.markdown("""
+                    <style>
+                    div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] {
+                        color: gold !important;
+                        font-weight: bold;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
+
         prediction_method = st.radio('', ('Predict Record-wise', 'Predict for Entire DataFrame'))
         if prediction_method=='Predict Record-wise':
             c1, c2, c3 = st.columns([1, 1, 1.5])
@@ -274,7 +283,6 @@ if selected == "Home":
                             result = model.predict(df)
                             if result[0] == 0:
                                 st.write("**Not laundering** 🎉😊")
-                                st.balloons()  # This simulates a celebratory animation
                             else:
                                 st.write("**Laundering** 😞")
                                 st.toast('bad luck', icon="👎")
@@ -327,8 +335,8 @@ if selected == "Home":
     
                         l_counts = df['laundering'].value_counts()
     
-                        st.markdown(f'<p style="color:orange; font-weight:bold;">No of churn customers: {l_counts["Yes"]}</p>', unsafe_allow_html=True)
-                        st.markdown(f'<p style="color:orange; font-weight:bold;">Total customers: {len(laundering)}</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">No of Transactions Laundering: {l_counts["Yes"]}</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color:orange; font-weight:bold;">Toatl No of Transactions: {len(laundering)}</p>', unsafe_allow_html=True)
                         st.title("Go to Prediction Analytics to view analytics")
                                 
     
@@ -363,7 +371,7 @@ elif selected == "Prediction Analytics":
     p1,p2=st.columns(2)
 
     if data:
-      st.write("hi")
+      st.write("COMMING SOON")
     
     
 
