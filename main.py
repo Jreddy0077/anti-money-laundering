@@ -84,7 +84,7 @@ if selected == "Home":
         dic={}
 
         #st.title("**anti money laundering**")
-        st.markdown('<h2 style="color:yellow;">There You Can Check The Trasaction</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:yellow;">Anti-Money Laundering (AML) Detection </h2>', unsafe_allow_html=True)
 
 
         st.markdown('<h4 style="color:orange;">Select Prediction Method</h4>', unsafe_allow_html=True)
