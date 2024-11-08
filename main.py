@@ -379,20 +379,25 @@ elif selected == "Prediction Analytics":
         import matplotlib.pyplot as plt
         import seaborn as sns
         
-        top_to_banks = df.groupby("to bank")["is laundering"].sum().sort_values(ascending=False)
-        a = top_to_banks.index[0:20]
-        b = top_to_banks.values[0:20]
+        top_to_banks = (
+            df[df["is laundering"] == 1]
+            .groupby(["to bank"])["is laundering"]
+            .sum()
+            .sort_values(ascending=False)
+            .reset_index()
+            .head(20) 
+        )
         
-        plt.figure(figsize=(10, 6))
-        sns.barplot(x=a, y=b,hue=df["to bank"])
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x="to bank", y="is laundering", hue="from bank", data=top_to_banks)
         plt.xticks(rotation=90)
-        plt.title("Top 20 Destination Banks by Laundering Activity")
+        plt.title("Top 20 Destination Banks by Laundering Activity (is laundering = 1)")
         plt.xlabel("To Bank")
-        plt.ylabel("Total Laundering Count")
+        plt.ylabel("Laundering Count")
         
         st.pyplot(plt)
-
-    
+        
+            
     
 
 
