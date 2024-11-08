@@ -388,7 +388,7 @@ elif selected == "Prediction Analytics":
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
         with c22:
-            st.dataframe(top_to_banks_df,height=650)
+            st.dataframe(top_to_banks_df,height=700)
     
         with c11:
             filtered_df = df[df["is laundering"] == 1]
