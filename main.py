@@ -418,7 +418,7 @@ elif selected == "Prediction Analytics":
            plt.ylabel("Count")
            st.pyplot(plt)
         with c22:
-            st.dataframe(payment_format_counts_df,height=600)
+            st.dataframe(payment_format_counts_df,height=900)
         with c11:
             currency_counts = df[df["is laundering"] == 1]["payment currency"].value_counts()
             currency_counts_df = currency_counts.reset_index()
