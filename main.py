@@ -392,7 +392,7 @@ elif selected == "Prediction Analytics":
         
         # Create the plot
         plt.figure(figsize=(12, 6))
-        sns.barplot(x="to bank", y="count", data=top_to_banks_df)
+        sns.barplot(x="to bank", y="count", data=top_to_banks_df,hue="to bank")
         plt.xticks(rotation=90)
         plt.title("Top 10 Destination Banks by Laundering Activity (is laundering = 1)")
         plt.xlabel("To Bank")
