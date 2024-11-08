@@ -427,7 +427,6 @@ elif selected == "Prediction Analytics":
            plt.xlabel("Payment Format")
            plt.ylabel("Count")
            st.pyplot(plt)
-        with c22:
             
 
 
