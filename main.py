@@ -354,7 +354,6 @@ if selected == "Home":
 
 elif selected == "Prediction Analytics":
 
-    st.dataframe(df)
 
     import matplotlib.pyplot as plt
     import seaborn as sns
@@ -376,9 +375,11 @@ elif selected == "Prediction Analytics":
 
     
 
-
+  
     
-    p1,p2=st.columns(2)
+
+    st.dataframe(df)
+
 
     if data:
         
