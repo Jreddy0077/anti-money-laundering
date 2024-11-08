@@ -411,6 +411,8 @@ elif selected == "Prediction Analytics":
         plt.ylabel("Laundering Count")
         st.pyplot(plt)
 
+        st.dataframe(top_from_bank_df)
+
 
 
 
