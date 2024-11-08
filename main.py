@@ -371,21 +371,6 @@ elif selected == "Prediction Analytics":
          data=True
     except Exception as e:
          st.title("You Have No Any Prediction yet")
-    
-
-    
-
-  
-    
-
-    st.dataframe(df)
-    df['from bank'] = df['from bank'].astype("object")
-    df['to bank'] = df['to bank'].astype("object")
-    st.dataframe(df)
-
-
-
-
 
     if data:
         
@@ -404,7 +389,7 @@ elif selected == "Prediction Analytics":
             st.pyplot(plt)
         with c22:
             df['to bank'] = df['to bank'].astype(str)
-            st.dataframe(top_to_banks_df)
+            st.dataframe(top_to_banks_df,height=300)
     
         with c11:
             filtered_df = df[df["is laundering"] == 1]
