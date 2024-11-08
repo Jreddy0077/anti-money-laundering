@@ -379,6 +379,7 @@ elif selected == "Prediction Analytics":
     p1,p2=st.columns(2)
 
     if data:
+        
         c11, c22 = st.columns([1, 1])
         with c11:
             filtered_df = df[df["is laundering"] == 1]
@@ -393,13 +394,8 @@ elif selected == "Prediction Analytics":
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
         with c22:
-            pd.dataframe(top_to_banks_df)
-            
-            
-
-
-
-        ##############################################################################################3
+            st.dataframe(top_to_banks_df)
+    
         with c11:
             filtered_df = df[df["is laundering"] == 1]
             top_from_banks_counts = filtered_df["from bank"].value_counts().head(20)
@@ -412,17 +408,10 @@ elif selected == "Prediction Analytics":
             plt.xlabel("from Bank")
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
-
-
+    
         with c22:
             st.dataframe(top_from_banks_df)
 
-
-
-
-
-
-        
             
     
 
