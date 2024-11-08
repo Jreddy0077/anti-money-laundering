@@ -376,42 +376,52 @@ elif selected == "Prediction Analytics":
 
     if data:
 
+         c11, c22 = st.columns([1, 1])
+
+        
+
         import matplotlib.pyplot as plt
         import seaborn as sns
         import streamlit as st
 
 
         ##############################################################################################3
-        
-        filtered_df = df[df["is laundering"] == 1]
-        top_to_banks_counts = filtered_df["to bank"].value_counts().head(20)
-        top_to_banks_df = top_to_banks_counts.reset_index()
-        top_to_banks_df.columns = ["to bank", "count"]
-        plt.figure(figsize=(12, 6))
-        sns.barplot(x="to bank", y="count", data=top_to_banks_df)
-        plt.xticks(rotation=90)
-        plt.title("Top 20 Destination Banks by Laundering Activity (is laundering = 1)")
-        plt.xlabel("To Bank")
-        plt.ylabel("Laundering Count")
-        st.pyplot(plt)
+        with c11:
+            
+            filtered_df = df[df["is laundering"] == 1]
+            top_to_banks_counts = filtered_df["to bank"].value_counts().head(20)
+            top_to_banks_df = top_to_banks_counts.reset_index()
+            top_to_banks_df.columns = ["to bank", "count"]
+            plt.figure(figsize=(12, 6))
+            sns.barplot(x="to bank", y="count", data=top_to_banks_df)
+            plt.xticks(rotation=90)
+            plt.title("Top 20 Destination Banks by Laundering Activity (is laundering = 1)")
+            plt.xlabel("To Bank")
+            plt.ylabel("Laundering Count")
+            st.pyplot(plt)
+        with c22:
+            top_to_banks_df
+            
 
 
 
         ##############################################################################################3
-        
-        filtered_df = df[df["is laundering"] == 1]
-        top_from_banks_counts = filtered_df["from bank"].value_counts().head(20)
-        top_from_banks_df = top_from_banks_counts.reset_index()
-        top_from_banks_df.columns = ["from bank", "count"]
-        plt.figure(figsize=(12, 6))
-        sns.barplot(x="from bank", y="count", data=top_from_banks_df)
-        plt.xticks(rotation=90)
-        plt.title("Top 20 Sender Banks by Laundering Activity (is laundering = 1)")
-        plt.xlabel("from Bank")
-        plt.ylabel("Laundering Count")
-        st.pyplot(plt)
+        with c11:
+            filtered_df = df[df["is laundering"] == 1]
+            top_from_banks_counts = filtered_df["from bank"].value_counts().head(20)
+            top_from_banks_df = top_from_banks_counts.reset_index()
+            top_from_banks_df.columns = ["from bank", "count"]
+            plt.figure(figsize=(12, 6))
+            sns.barplot(x="from bank", y="count", data=top_from_banks_df)
+            plt.xticks(rotation=90)
+            plt.title("Top 20 Sender Banks by Laundering Activity (is laundering = 1)")
+            plt.xlabel("from Bank")
+            plt.ylabel("Laundering Count")
+            st.pyplot(plt)
 
-        st.dataframe(top_from_bank_df)
+
+        with c22:
+            st.dataframe(top_from_banks_df)
 
 
 
