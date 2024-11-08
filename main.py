@@ -379,6 +379,12 @@ elif selected == "Prediction Analytics":
     
 
     st.dataframe(df)
+    df['from bank'] = df['from bank'].astype("object")
+    df['to bank'] = df['to bank'].astype("object")
+    st.dataframe(df)
+
+
+
 
 
     if data:
