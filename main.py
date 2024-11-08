@@ -375,21 +375,13 @@ elif selected == "Prediction Analytics":
     
 
 
-    #st.set_option('deprecation.showPyplotGlobalUse', False)
+    st.set_option('deprecation.showPyplotGlobalUse', False)
     
     p1,p2=st.columns(2)
 
     if data:
-
-         c11, c22 = st.columns([1, 1])
-
-        
-
-        
-
-        ##############################################################################################3
+        c11, c22 = st.columns([1, 1])
         with c11:
-            
             filtered_df = df[df["is laundering"] == 1]
             top_to_banks_counts = filtered_df["to bank"].value_counts().head(20)
             top_to_banks_df = top_to_banks_counts.reset_index()
