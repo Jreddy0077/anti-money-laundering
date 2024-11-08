@@ -394,6 +394,8 @@ elif selected == "Prediction Analytics":
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
         with c22:
+            df['to bank'] = df['to bank'].astype(str)
+
             st.dataframe(top_to_banks_df)
     
         with c11:
@@ -410,7 +412,22 @@ elif selected == "Prediction Analytics":
             st.pyplot(plt)
     
         with c22:
+            df['from bank'] = df['from bank'].astype(str)
+
             st.dataframe(top_from_banks_df)
+
+       with col11:
+           payment_format_counts = df[df["is laundering"] == 1]["payment format"].value_counts()
+           payment_format_counts_df = payment_format_counts.reset_index()
+           payment_format_counts_df.columns = ["payment format", "count"]
+           plt.figure(figsize=(10, 6))
+           sns.barplot(x="payment format", y="count", data=payment_format_counts_df)
+           plt.xticks(rotation=90)
+           plt.title("Laundering Activity by Payment Format")
+           plt.xlabel("Payment Format")
+           plt.ylabel("Count")
+           st.pyplot(plt)
+
 
             
     
