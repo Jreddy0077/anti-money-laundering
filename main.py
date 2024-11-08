@@ -354,6 +354,8 @@ if selected == "Home":
 
 elif selected == "Prediction Analytics":
 
+    st.dataframe(df)
+
     import matplotlib.pyplot as plt
     import seaborn as sns
     import streamlit as st
@@ -380,7 +382,7 @@ elif selected == "Prediction Analytics":
 
     if data:
         
-        c11, c22 = st.columns([1, 1])
+        c11, c22 = st.columns([1,0.2])
         with c11:
             filtered_df = df[df["is laundering"] == 1]
             top_to_banks_counts = filtered_df["to bank"].value_counts().head(20)
@@ -395,7 +397,6 @@ elif selected == "Prediction Analytics":
             st.pyplot(plt)
         with c22:
             df['to bank'] = df['to bank'].astype(str)
-
             st.dataframe(top_to_banks_df)
     
         with c11:
@@ -426,6 +427,8 @@ elif selected == "Prediction Analytics":
            plt.xlabel("Payment Format")
            plt.ylabel("Count")
            st.pyplot(plt)
+        with c22:
+            
 
 
             
