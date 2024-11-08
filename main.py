@@ -379,27 +379,42 @@ elif selected == "Prediction Analytics":
         import matplotlib.pyplot as plt
         import seaborn as sns
         import streamlit as st
+
+
+        ##############################################################################################3
         
-        # Filter data where is laundering is 1
         filtered_df = df[df["is laundering"] == 1]
-        
-        # Get the top 10 'to bank' values with their counts
-        top_to_banks_counts = filtered_df["to bank"].value_counts().head(10)
-        
-        # Create a DataFrame for plotting
+        top_to_banks_counts = filtered_df["to bank"].value_counts().head(20)
         top_to_banks_df = top_to_banks_counts.reset_index()
         top_to_banks_df.columns = ["to bank", "count"]
-        
-        # Create the plot
         plt.figure(figsize=(12, 6))
-        sns.barplot(x="to bank", y="count", data=top_to_banks_df,hue="to bank")
+        sns.barplot(x="to bank", y="count", data=top_to_banks_df)
         plt.xticks(rotation=90)
-        plt.title("Top 10 Destination Banks by Laundering Activity (is laundering = 1)")
+        plt.title("Top 20 Destination Banks by Laundering Activity (is laundering = 1)")
         plt.xlabel("To Bank")
         plt.ylabel("Laundering Count")
-        
-        # Display the plot in Streamlit
         st.pyplot(plt)
+
+
+
+        ##############################################################################################3
+        
+        filtered_df = df[df["is laundering"] == 1]
+        top_from_banks_counts = filtered_df["from bank"].value_counts().head(20)
+        top_from_banks_df = top_from_banks_counts.reset_index()
+        top_from_banks_df.columns = ["from bank", "count"]
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x="from bank", y="count", data=top_from_banks_df)
+        plt.xticks(rotation=90)
+        plt.title("Top 20 Sender Banks by Laundering Activity (is laundering = 1)")
+        plt.xlabel("from Bank")
+        plt.ylabel("Laundering Count")
+        st.pyplot(plt)
+
+
+
+
+
 
         
             
