@@ -415,8 +415,7 @@ elif selected == "Prediction Analytics":
             df['from bank'] = df['from bank'].astype(str)
 
             st.dataframe(top_from_banks_df)
-
-       with c11:
+        with c11:
            payment_format_counts = df[df["is laundering"] == 1]["payment format"].value_counts()
            payment_format_counts_df = payment_format_counts.reset_index()
            payment_format_counts_df.columns = ["payment format", "count"]
