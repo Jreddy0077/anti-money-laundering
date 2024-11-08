@@ -375,7 +375,6 @@ elif selected == "Prediction Analytics":
     
 
 
-    st.set_option('deprecation.showPyplotGlobalUse', False)
     
     p1,p2=st.columns(2)
 
