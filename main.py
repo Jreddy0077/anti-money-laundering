@@ -388,7 +388,7 @@ elif selected == "Prediction Analytics":
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
         with c22:
-            st.dataframe(top_to_banks_df,height=500)
+            st.dataframe(top_to_banks_df,height=700)
     
         with c11:
             filtered_df = df[df["is laundering"] == 1]
@@ -405,7 +405,7 @@ elif selected == "Prediction Analytics":
     
         with c22:
 
-            st.dataframe(top_from_banks_df,height=500)
+            st.dataframe(top_from_banks_df,height=700)
         with c11:
            payment_format_counts = df[df["is laundering"] == 1]["payment format"].value_counts()
            payment_format_counts_df = payment_format_counts.reset_index()
@@ -418,7 +418,46 @@ elif selected == "Prediction Analytics":
            plt.ylabel("Count")
            st.pyplot(plt)
         with c22:
-            st.dataframe(payment_format_counts_df,height=500)
+            st.dataframe(payment_format_counts_df,height=700)
+        with c11:
+            currency_counts = df[df["is laundering"] == 1]["payment currency"].value_counts()
+            currency_counts_df = currency_counts.reset_index()
+            currency_counts_df.columns = ["payment currency", "count"]
+            
+            plt.figure(figsize=(10, 6))
+            sns.barplot(x="payment currency", y="count", data=currency_counts_df)
+            plt.xticks(rotation=90)
+            plt.title("Laundering Activity by Payment Currency")
+            plt.xlabel("Payment Currency")
+            plt.ylabel("Count")
+            
+            st.pyplot(plt)
+        with c22:
+            st.dataframe(currency_counts_df,height=700)
+        with c11:
+
+            receiving_currency_counts = df[df["is laundering"] == 1]["receiving currency"].value_counts()
+            receiving_currency_counts_df = receiving_currency_counts.reset_index()
+            receiving_currency_counts_df.columns = ["receiving currency", "count"]
+            
+            plt.figure(figsize=(10, 6))
+            sns.barplot(x="receiving currency", y="count", data=receiving_currency_counts_df)
+            plt.xticks(rotation=90)
+            plt.title("Laundering Activity by Receiving Currency")
+            plt.xlabel("Receiving Currency")
+            plt.ylabel("Count")
+            
+            st.pyplot(plt)
+        with c22:
+            st.dataframe(receiving_currency_counts_df,height=700)
+          
+
+            
+
+
+
+
+       
             
             
 
