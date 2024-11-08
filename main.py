@@ -433,7 +433,7 @@ elif selected == "Prediction Analytics":
             
             st.pyplot(plt)
         with c22:
-            st.dataframe(currency_counts_df,height=700)
+            st.dataframe(currency_counts_df,height=900)
         with c11:
 
             receiving_currency_counts = df[df["is laundering"] == 1]["receiving currency"].value_counts()
