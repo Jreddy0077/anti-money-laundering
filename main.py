@@ -400,7 +400,8 @@ elif selected == "Prediction Analytics":
             plt.ylabel("Laundering Count")
             st.pyplot(plt)
         with c22:
-            top_to_banks_df
+            pd.dataframe(top_to_banks_df)
+            
             
 
 
